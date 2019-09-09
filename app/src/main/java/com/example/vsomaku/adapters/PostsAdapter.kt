@@ -1,6 +1,7 @@
 package com.example.vsomaku.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vsomaku.DEBUG_TAG
 import com.example.vsomaku.R
+import com.example.vsomaku.activities.DetalizationActivity
 import com.example.vsomaku.data.Post
 
 class PostsAdapter(private val context : Context,
@@ -32,7 +34,10 @@ class PostsAdapter(private val context : Context,
 
         init {
             view.setOnClickListener {
-                Log.d(DEBUG_TAG, "Holder [$adapterPosition] clicked")
+                val post = posts[adapterPosition]
+                val intent = Intent(context, DetalizationActivity::class.java)
+                intent.putExtra(DetalizationActivity.POST_KEY, post)
+                context.startActivity(intent)
             }
         }
 
