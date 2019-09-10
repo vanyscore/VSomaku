@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), Handler.Callback {
         Thread(
             ThreadRequest(
                 handler,
-                SomakuApi.create().getPosts()
+                ApiHelper.apiInstance.getPosts()
             )
         ).start()
     }

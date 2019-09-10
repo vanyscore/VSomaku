@@ -1,5 +1,6 @@
 package com.example.vsomaku.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -8,6 +9,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vsomaku.*
@@ -16,26 +18,25 @@ import com.example.vsomaku.data.Comment
 import com.example.vsomaku.data.Post
 import com.example.vsomaku.data.User
 
-class DetalizationActivity : AppCompatActivity() {
+class PostActivity : AppCompatActivity() {
     private lateinit var post : Post
     private var reqCount = 0
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detalization)
+        setContentView(R.layout.activity_post)
 
         recyclerView = findViewById(R.id.recycler_view)
         post = intent.getParcelableExtra(POST_KEY)
         bindPostInfo()
 
-        Thread(ThreadRequest(Handler(commentsCallback), SomakuApi.create().getComments(post.id))).start()
-        Thread(ThreadRequest(Handler(userCallback), SomakuApi.create().getUser(post.userId))).start()
+        Thread(ThreadRequest(Handler(commentsCallback), ApiHelper.apiInstance.getComments(post.id))).start()
+        Thread(ThreadRequest(Handler(userCallback), ApiHelper.apiInstance.getUser(post.userId))).start()
     }
 
     private val commentsCallback = Handler.Callback { msg ->
         val comments : List<Comment> = msg?.data!!.getParcelableArrayList(ThreadRequest.LIST_KEY)
-        Log.d(DEBUG_TAG, comments.toString())
 
         bindComments(comments)
 
@@ -47,7 +48,6 @@ class DetalizationActivity : AppCompatActivity() {
 
     private val userCallback = Handler.Callback { msg ->
         val users : List<User> = msg?.data!!.getParcelableArrayList(ThreadRequest.LIST_KEY)
-        Log.d(DEBUG_TAG, users[0].toString())
 
         bindUserInfo(users[0])
 
@@ -69,6 +69,11 @@ class DetalizationActivity : AppCompatActivity() {
 
     private fun bindUserInfo(user : User) {
         findViewById<TextView>(R.id.tv_user_info).text = "(${user.name}, ${user.email})"
+        findViewById<CardView>(R.id.cv_user).setOnClickListener {
+            val intent = Intent(this, UserActivity::class.java)
+            intent.putExtra(UserActivity.USER_KEY, user)
+            startActivity(intent)
+        }
     }
 
     private fun showLayout() {

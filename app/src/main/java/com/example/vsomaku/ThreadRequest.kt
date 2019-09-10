@@ -10,8 +10,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.ArrayList
 
-class ThreadRequest<T : List<Parcelable>>(protected val handler : Handler,
-                                protected val call : Call<T>) : Runnable, Callback<T> {
+class ThreadRequest<T : List<Parcelable>>(private val handler : Handler,
+                                private val call : Call<T>) : Runnable, Callback<T> {
     private val bundle = Bundle()
     private val message = Message()
 
@@ -35,6 +35,5 @@ class ThreadRequest<T : List<Parcelable>>(protected val handler : Handler,
 
     companion object {
         const val LIST_KEY = "list"
-        const val OBJECT_KEY = "object"
     }
 }

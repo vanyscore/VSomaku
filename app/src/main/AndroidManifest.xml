@@ -12,8 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.DetalizationActivity" android:label="Detalization"></activity>
-        <activity android:name=".activities.MainActivity" android:label="Posts">
+        <activity android:name=".activities.UserActivity" android:label="User"></activity>
+        <activity
+            android:name=".activities.PostActivity"
+            android:label="Post info" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="Posts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

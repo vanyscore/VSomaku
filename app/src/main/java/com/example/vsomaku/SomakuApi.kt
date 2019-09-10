@@ -1,8 +1,6 @@
 package com.example.vsomaku
 
-import com.example.vsomaku.data.Comment
-import com.example.vsomaku.data.Post
-import com.example.vsomaku.data.User
+import com.example.vsomaku.data.*
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,14 +17,9 @@ interface SomakuApi {
     @GET("users")
     fun getUser(@Query("id") userId : Int) : Call<List<User>>
 
-    companion object {
-        private const val BASE_URL = "http://www.somaku.com/"
+    @GET("albums")
+    fun getAlbums(@Query("userId") userId : Int) : Call<List<Album>>
 
-        fun create() : SomakuApi {
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build().create(SomakuApi::class.java)
-        }
-    }
+    @GET("photos")
+    fun getPhotos(@Query("albumId") albumId : Int) : Call<List<Photo>>
 }
