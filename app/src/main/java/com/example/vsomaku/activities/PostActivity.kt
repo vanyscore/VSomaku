@@ -17,6 +17,9 @@ import com.example.vsomaku.adapters.CommentariesAdapter
 import com.example.vsomaku.data.Comment
 import com.example.vsomaku.data.Post
 import com.example.vsomaku.data.User
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PostActivity : AppCompatActivity() {
     private lateinit var post : Post
@@ -31,35 +34,41 @@ class PostActivity : AppCompatActivity() {
         post = intent.getParcelableExtra(POST_KEY)
         bindPostInfo()
 
-        Thread(ThreadRequest(Handler(commentsCallback), ApiHelper.apiInstance.getComments(post.id))).start()
-        Thread(ThreadRequest(Handler(userCallback), ApiHelper.apiInstance.getUser(post.userId))).start()
-    }
+        ApiHelper.apiInstance.getUser(post.userId).enqueue(object : Callback<List<User>> {
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                Log.d(DEBUG_TAG, t.localizedMessage)
+            }
 
-    private val commentsCallback = Handler.Callback { msg ->
-        val comments : List<Comment> = msg?.data!!.getParcelableArrayList(ThreadRequest.LIST_KEY)
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                if (response.code() == 200) {
+                    val users = response.body()
+                    if (users != null)
+                        bindUserInfo(users[0])
+                }
+            }
+        })
 
-        bindComments(comments)
+        ApiHelper.apiInstance.getComments(post.id).enqueue(object : Callback<List<Comment>> {
+            override fun onFailure(call: Call<List<Comment>>, t: Throwable) {
+                Log.d(DEBUG_TAG, t.localizedMessage)
+            }
 
-        reqCount++
-        if (reqCount == 2) showLayout()
-
-        true
-    }
-
-    private val userCallback = Handler.Callback { msg ->
-        val users : List<User> = msg?.data!!.getParcelableArrayList(ThreadRequest.LIST_KEY)
-
-        bindUserInfo(users[0])
-
-        reqCount++
-        if (reqCount == 2) showLayout()
-
-        true
+            override fun onResponse(call: Call<List<Comment>>, response: Response<List<Comment>>) {
+                if (response.code() == 200) {
+                    val comments = response.body()
+                    if (comments != null)
+                        bindComments(comments)
+                }
+            }
+        })
     }
 
     private fun bindComments(comments : List<Comment>) {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = CommentariesAdapter(this, comments)
+
+        reqCount++
+        if (reqCount == 2) showLayout()
     }
 
     private fun bindPostInfo() {
@@ -74,6 +83,9 @@ class PostActivity : AppCompatActivity() {
             intent.putExtra(UserActivity.USER_KEY, user)
             startActivity(intent)
         }
+
+        reqCount++
+        if (reqCount == 2) showLayout()
     }
 
     private fun showLayout() {
