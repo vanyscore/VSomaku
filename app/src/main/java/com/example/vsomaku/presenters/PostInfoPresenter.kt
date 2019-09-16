@@ -11,11 +11,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PostInfoPresenter(private val view : PostInfoView, private val post : Post) {
+class PostInfoPresenter(private val post : Post) : BasePresenter<PostInfoView>() {
     private var reqCount = 0
 
     fun showPostInfo() {
-        view.bindPostInfo(post)
+        view?.bindPostInfo(post)
     }
 
     fun getComments() {
@@ -26,9 +26,9 @@ class PostInfoPresenter(private val view : PostInfoView, private val post : Post
 
             override fun onResponse(call: Call<List<Comment>>, response: Response<List<Comment>>) {
                 val comments = response.body()
-                if (comments != null) view.bindComments(comments)
+                if (comments != null) view?.bindComments(comments)
 
-                if (++reqCount == 2) view.showLayout()
+                if (++reqCount == 2) view?.showLayout()
             }
         })
     }
@@ -42,9 +42,9 @@ class PostInfoPresenter(private val view : PostInfoView, private val post : Post
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.code() == 200) {
                     val users = response.body()
-                    if (users != null) view.bindUserInfo(users[0])
+                    if (users != null) view?.bindUserInfo(users[0])
 
-                    if (++reqCount == 2) view.showLayout()
+                    if (++reqCount == 2) view?.showLayout()
                 }
             }
         })

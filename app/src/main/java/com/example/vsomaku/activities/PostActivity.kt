@@ -16,16 +16,16 @@ import com.example.vsomaku.presenters.views.PostInfoView
 import kotlinx.android.synthetic.main.activity_post.*
 
 class PostActivity : AppCompatActivity(), PostInfoView {
+    private var presenter : PostInfoPresenter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
-        val post : Post = intent.getParcelableExtra(POST_KEY)
-        val presenter = PostInfoPresenter(this, post)
-
-        presenter.showPostInfo()
-        presenter.getUserInfo()
-        presenter.getComments()
+        if (presenter == null) {
+            val post : Post = intent.getParcelableExtra(POST_KEY)
+            presenter = PostInfoPresenter(post)
+        }
     }
 
     override fun bindComments(comments : List<Comment>) {
@@ -51,6 +51,23 @@ class PostActivity : AppCompatActivity(), PostInfoView {
     override fun showLayout() {
         progress_bar.visibility = View.GONE
         scroll_view.visibility = View.VISIBLE
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter?.let {
+            it.bindView(this)
+            it.showPostInfo()
+            it.getUserInfo()
+            it.getComments()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        presenter?.unbindView()
     }
 
     companion object {

@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PostsPresenter(private val view : PostsView) {
+class PostsPresenter: BasePresenter<PostsView>() {
     fun getPosts() {
         ApiHelper.apiInstance.getPosts().enqueue(object : Callback<List<Post>> {
             override fun onFailure(call: Call<List<Post>>, t: Throwable) {
@@ -25,8 +25,8 @@ class PostsPresenter(private val view : PostsView) {
                         posts[i].title = posts[i].title!![0].toUpperCase().toString() + posts[i].title?.substring(1)
                     }
 
-                    view.bindPosts(posts)
-                    view.showLayout()
+                    view?.bindPosts(posts)
+                    view?.showLayout()
                 }
             }
         })

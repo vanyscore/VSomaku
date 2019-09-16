@@ -21,14 +21,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class UserActivity : AppCompatActivity(), UserView {
+    private var presenter : UserInfoPresenter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
-        val user : User = intent.getParcelableExtra(USER_KEY)
-        val presenter = UserInfoPresenter(this, user)
-
-        presenter.getUserInfo()
+        if (presenter == null) {
+            val user : User = intent.getParcelableExtra(USER_KEY)
+            presenter = UserInfoPresenter(user)
+        }
     }
 
     override fun bindUserInfo(user : User) {
@@ -52,6 +54,21 @@ class UserActivity : AppCompatActivity(), UserView {
     override fun showLayout() {
         progress_bar.visibility = View.GONE
         scroll_view.visibility = View.VISIBLE
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter?.let {
+            it.bindView(this)
+            it.getUserInfo()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        presenter?.unbindView()
     }
 
     companion object {

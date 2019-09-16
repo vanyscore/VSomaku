@@ -12,11 +12,12 @@ import com.example.vsomaku.presenters.views.PostsView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), PostsView {
+
+    private val presenter : PostsPresenter = PostsPresenter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        PostsPresenter(this).getPosts()
     }
 
     override fun bindPosts(posts : List<Post>) {
@@ -27,5 +28,18 @@ class MainActivity : AppCompatActivity(), PostsView {
     override fun showLayout() {
         progress_bar.visibility = View.GONE
         recycler_view.visibility = View.VISIBLE
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.bindView(this)
+        presenter.getPosts()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        presenter.unbindView()
     }
 }

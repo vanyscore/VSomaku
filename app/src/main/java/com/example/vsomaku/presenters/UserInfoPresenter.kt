@@ -11,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserInfoPresenter(private val view : UserView, private val user : User) {
+class UserInfoPresenter(private val user : User) : BasePresenter<UserView>() {
     private var photos : ArrayList<Photo> = arrayListOf()
 
     fun getUserInfo() {
@@ -47,9 +47,11 @@ class UserInfoPresenter(private val view : UserView, private val user : User) {
                             albumsCount++
 
                             if (albumsCount == albums.size) {
-                                view.bindUserInfo(user)
-                                view.bindAlbumsInfo(albums, this@UserInfoPresenter.photos)
-                                view.showLayout()
+                                view?.let {
+                                    it.bindUserInfo(user)
+                                    it.bindAlbumsInfo(albums, this@UserInfoPresenter.photos)
+                                    it.showLayout()
+                                }
                             }
                         }
                     }
