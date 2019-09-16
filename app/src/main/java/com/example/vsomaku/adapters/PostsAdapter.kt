@@ -5,11 +5,11 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vsomaku.R
 import com.example.vsomaku.activities.PostActivity
 import com.example.vsomaku.data.Post
+import kotlinx.android.synthetic.main.rcv_item_post.view.*
 
 class PostsAdapter(private val context : Context,
                    private val posts : List<Post>) : RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
@@ -27,9 +27,6 @@ class PostsAdapter(private val context : Context,
 
 
     inner class PostViewHolder(view : View) : RecyclerView.ViewHolder(view) {
-        private val tvTitle = view.findViewById<TextView>(R.id.tv_title)
-        private val tvDescription = view.findViewById<TextView>(R.id.tv_description)
-
         init {
             view.setOnClickListener {
                 val post = posts[adapterPosition]
@@ -40,8 +37,8 @@ class PostsAdapter(private val context : Context,
         }
 
         fun bindInfo(post : Post) {
-            tvTitle.text = post.title
-            tvDescription.text = post.description
+            itemView.tv_title.text = post.title
+            itemView.tv_description.text = post.description
         }
     }
 }

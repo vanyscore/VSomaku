@@ -4,10 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vsomaku.R
 import com.example.vsomaku.data.Comment
+import kotlinx.android.synthetic.main.activity_user.view.tv_email
+import kotlinx.android.synthetic.main.activity_user.view.tv_name
+import kotlinx.android.synthetic.main.rcv_item_comment.view.*
 
 class CommentariesAdapter(private val context : Context, private val comments : List<Comment>)
     : RecyclerView.Adapter<CommentariesAdapter.CommentViewHolder>() {
@@ -25,14 +27,11 @@ class CommentariesAdapter(private val context : Context, private val comments : 
 
 
     inner class CommentViewHolder(view : View) : RecyclerView.ViewHolder(view) {
-        private val tvName = view.findViewById<TextView>(R.id.tv_name)
-        private val tvEmail = view.findViewById<TextView>(R.id.tv_email)
-        private val tvText = view.findViewById<TextView>(R.id.tv_text)
 
         fun bindInfo(comment : Comment) {
-            tvName.text = comment.name
-            tvEmail.text = comment.email
-            tvText.text = comment.text
+            itemView.tv_name.text = comment.name
+            itemView.tv_email.text = comment.email
+            itemView.tv_text.text = comment.text
         }
     }
 }
