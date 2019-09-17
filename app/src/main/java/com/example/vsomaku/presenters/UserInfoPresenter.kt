@@ -7,55 +7,59 @@ import com.example.vsomaku.data.Album
 import com.example.vsomaku.data.Photo
 import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.views.UserView
-import retrofit2.Call
-import retrofit2.Callback
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
 class UserInfoPresenter(private val user : User) : BasePresenter<UserView>() {
     private var photos : ArrayList<Photo> = arrayListOf()
 
-    fun getUserInfo() {
-        ApiHelper.apiInstance.getAlbums(user.id).enqueue(object : Callback<List<Album>> {
-            override fun onFailure(call: Call<List<Album>>, t: Throwable) {
-                Log.d(DEBUG_TAG, t.localizedMessage)
-            }
+    fun showUserInfo() {
+        view?.showUserInfo(user)
+    }
 
-            override fun onResponse(call: Call<List<Album>>, response: Response<List<Album>>) {
+    fun getAlbums() {
+        disposable.add(ApiHelper.apiInstance.getAlbums(user.id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
                 if (response.code() == 200) {
                     val albums = response.body()
                     if (albums != null) {
                         execPhotosCount(albums)
                     }
                 }
-            }
-        })
+            }, {
+                Log.d(DEBUG_TAG, it.localizedMessage)
+            }))
     }
 
     private fun execPhotosCount(albums : List<Album>) {
-        var albumsCount = 0
-        for (album : Album in albums)
-            ApiHelper.apiInstance.getPhotos(album.id).enqueue(object : Callback<List<Photo>> {
-                override fun onFailure(call: Call<List<Photo>>, t: Throwable) {
-                    Log.d(DEBUG_TAG, t.localizedMessage)
-                }
+        val flow : ArrayList<Flowable<Response<List<Photo>>>> = arrayListOf()
+        for (album : Album in albums) flow.add(ApiHelper.apiInstance.getPhotos(album.id))
+        val flows : Flowable<Response<List<Photo>>> = Flowable.merge(flow)
+        var checkedAlbums = 0
+        disposable.add(flows
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
+                if (response.code() == 200) {
+                    Log.d(DEBUG_TAG, response.body()?.size.toString())
 
-                override fun onResponse(call: Call<List<Photo>>, response: Response<List<Photo>>) {
-                    if (response.code() == 200) {
-                        val photos = response.body()
-                        if (photos != null) {
-                            this@UserInfoPresenter.photos.addAll(photos)
-                            albumsCount++
+                    val photos = response.body()
+                    if (photos != null)
+                        this@UserInfoPresenter.photos.addAll(photos)
 
-                            if (albumsCount == albums.size) {
-                                view?.let {
-                                    it.bindUserInfo(user)
-                                    it.bindAlbumsInfo(albums, this@UserInfoPresenter.photos)
-                                    it.showLayout()
-                                }
-                            }
+                    if (++checkedAlbums == albums.size) {
+                        view?.let {
+                            it.bindAlbumsInfo(albums, this@UserInfoPresenter.photos)
+                            it.showLayout()
                         }
                     }
                 }
-            })
+            }, {
+                Log.d(DEBUG_TAG, it.localizedMessage)
+            }))
     }
 }

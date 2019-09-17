@@ -1,25 +1,25 @@
 package com.example.vsomaku
 
 import com.example.vsomaku.data.*
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import io.reactivex.Flowable
+import io.reactivex.Single
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface SomakuApi {
     @GET("posts")
-    fun getPosts() : Call<List<Post>>
+    fun getPosts() : Single<Response<List<Post>>>
 
     @GET("comments")
-    fun getComments(@Query("postId") postId : Int) : Call<List<Comment>>
+    fun getComments(@Query("postId") postId : Int) : Single<Response<List<Comment>>>
 
     @GET("users")
-    fun getUser(@Query("id") userId : Int) : Call<List<User>>
+    fun getUser(@Query("id") userId : Int) : Single<Response<List<User>>>
 
     @GET("albums")
-    fun getAlbums(@Query("userId") userId : Int) : Call<List<Album>>
+    fun getAlbums(@Query("userId") userId : Int) : Single<Response<List<Album>>>
 
     @GET("photos")
-    fun getPhotos(@Query("albumId") albumId : Int) : Call<List<Photo>>
+    fun getPhotos(@Query("albumId") albumId : Int) : Flowable<Response<List<Photo>>>
 }

@@ -7,6 +7,8 @@ import com.example.vsomaku.data.Comment
 import com.example.vsomaku.data.Post
 import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.views.PostInfoView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,34 +21,49 @@ class PostInfoPresenter(private val post : Post) : BasePresenter<PostInfoView>()
     }
 
     fun getComments() {
-        ApiHelper.apiInstance.getComments(post.id).enqueue(object : Callback<List<Comment>> {
-            override fun onFailure(call: Call<List<Comment>>, t: Throwable) {
-                Log.d(DEBUG_TAG, t.localizedMessage)
-            }
+        disposable.add(ApiHelper.apiInstance.getComments(post.id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
+                if (response.code() == 200) {
+                    val comments = response.body()
+                    if (comments != null) {
+                        view?.bindComments(comments!!.map { comment ->
+                            Comment(comment.postId,
+                                comment.id,
+                                comment.name[0].toUpperCase() + comment.name.substring(1),
+                                comment.email,
+                                comment.text[0].toUpperCase() + comment.text.substring(1))
+                        })
 
-            override fun onResponse(call: Call<List<Comment>>, response: Response<List<Comment>>) {
-                val comments = response.body()
-                if (comments != null) view?.bindComments(comments)
-
-                if (++reqCount == 2) view?.showLayout()
-            }
-        })
+                        if (++reqCount == 2) view?.showLayout()
+                    }
+                }
+            }, {
+                Log.d(DEBUG_TAG, it.localizedMessage)
+            }))
     }
 
     fun getUserInfo() {
-        ApiHelper.apiInstance.getUser(post.userId).enqueue(object : Callback<List<User>> {
-            override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                Log.d(DEBUG_TAG, t.localizedMessage)
-            }
-
-            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+        disposable.add(ApiHelper.apiInstance.getUser(post.userId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({response ->
                 if (response.code() == 200) {
                     val users = response.body()
-                    if (users != null) view?.bindUserInfo(users[0])
+                    if (users != null) {
+                        val user = users[0]
 
-                    if (++reqCount == 2) view?.showLayout()
+                        view?.let {
+                            it.bindUserInfo(user)
+
+                            if (++reqCount == 2)
+                                it.showLayout()
+                        }
+                    }
                 }
-            }
-        })
+            }, {
+                Log.d(DEBUG_TAG, it.localizedMessage)
+            }))
     }
 }

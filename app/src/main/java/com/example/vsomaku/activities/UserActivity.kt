@@ -33,7 +33,7 @@ class UserActivity : AppCompatActivity(), UserView {
         }
     }
 
-    override fun bindUserInfo(user : User) {
+     override fun showUserInfo(user : User) {
         tv_name.text = user.name
         tv_user_name.text = user.userName
         tv_email.text = user.email
@@ -41,9 +41,6 @@ class UserActivity : AppCompatActivity(), UserView {
         tv_address.text = "${user.address.city}, ${user.address.street}, ${user.address.apartment}"
         tv_company_name.text = user.company.name
         tv_company_phrase.text = user.company.phrase
-
-        progress_bar.visibility = View.GONE
-        scroll_view.visibility = View.VISIBLE
     }
 
     override fun bindAlbumsInfo(albums: List<Album>, photos : List<Photo>) {
@@ -61,7 +58,8 @@ class UserActivity : AppCompatActivity(), UserView {
 
         presenter?.let {
             it.bindView(this)
-            it.getUserInfo()
+            it.showUserInfo()
+            it.getAlbums()
         }
     }
 
@@ -69,6 +67,12 @@ class UserActivity : AppCompatActivity(), UserView {
         super.onPause()
 
         presenter?.unbindView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        presenter?.destroy()
     }
 
     companion object {

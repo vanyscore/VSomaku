@@ -30,6 +30,11 @@ class MainActivity : AppCompatActivity(), PostsView {
         recycler_view.visibility = View.VISIBLE
     }
 
+    override fun hideLayout() {
+        progress_bar.visibility = View.VISIBLE
+        recycler_view.visibility = View.GONE
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -41,5 +46,11 @@ class MainActivity : AppCompatActivity(), PostsView {
         super.onPause()
 
         presenter.unbindView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        presenter.destroy()
     }
 }

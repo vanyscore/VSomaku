@@ -70,6 +70,12 @@ class PostActivity : AppCompatActivity(), PostInfoView {
         presenter?.unbindView()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        presenter?.destroy()
+    }
+
     companion object {
         const val POST_KEY = "post"
     }

@@ -5,7 +5,7 @@ import com.example.vsomaku.data.Photo
 import com.example.vsomaku.data.User
 
 interface UserView {
-    fun bindUserInfo(user : User)
+    fun showUserInfo(user : User)
     fun bindAlbumsInfo(albums : List<Album>, photos : List<Photo>)
     fun showLayout()
 }
