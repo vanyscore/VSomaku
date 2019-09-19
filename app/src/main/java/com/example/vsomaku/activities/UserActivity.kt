@@ -8,6 +8,7 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import com.example.vsomaku.ApiHelper
+import com.example.vsomaku.AppComponentHelper
 import com.example.vsomaku.DEBUG_TAG
 import com.example.vsomaku.R
 import com.example.vsomaku.data.Album
@@ -19,18 +20,19 @@ import kotlinx.android.synthetic.main.activity_user.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
 class UserActivity : AppCompatActivity(), UserView {
-    private var presenter : UserInfoPresenter? = null
+    @Inject
+    lateinit var presenter : UserInfoPresenter
+    private lateinit var user : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
-        if (presenter == null) {
-            val user : User = intent.getParcelableExtra(USER_KEY)
-            presenter = UserInfoPresenter(user)
-        }
+        user = intent.getParcelableExtra(USER_KEY)
+        AppComponentHelper.appComponent.injectUserInfoPresenter(this)
     }
 
      override fun showUserInfo(user : User) {
@@ -56,23 +58,23 @@ class UserActivity : AppCompatActivity(), UserView {
     override fun onResume() {
         super.onResume()
 
-        presenter?.let {
+        presenter.let {
             it.bindView(this)
-            it.showUserInfo()
-            it.getAlbums()
+            it.showUserInfo(user)
+            it.getAlbumsData(user.id)
         }
     }
 
     override fun onPause() {
         super.onPause()
 
-        presenter?.unbindView()
+        presenter.unbindView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        presenter?.destroy()
+        presenter.onDestroy()
     }
 
     companion object {

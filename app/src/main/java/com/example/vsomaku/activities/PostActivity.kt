@@ -14,18 +14,20 @@ import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.PostInfoPresenter
 import com.example.vsomaku.presenters.views.PostInfoView
 import kotlinx.android.synthetic.main.activity_post.*
+import javax.inject.Inject
 
 class PostActivity : AppCompatActivity(), PostInfoView {
-    private var presenter : PostInfoPresenter? = null
+
+    @Inject
+    lateinit var presenter : PostInfoPresenter
+    lateinit var post : Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
-        if (presenter == null) {
-            val post : Post = intent.getParcelableExtra(POST_KEY)
-            presenter = PostInfoPresenter(post)
-        }
+        post = intent.getParcelableExtra(POST_KEY)
+        AppComponentHelper.appComponent.injectPostInfoPresenter(this)
     }
 
     override fun bindComments(comments : List<Comment>) {
@@ -56,24 +58,24 @@ class PostActivity : AppCompatActivity(), PostInfoView {
     override fun onResume() {
         super.onResume()
 
-        presenter?.let {
+        presenter.let {
             it.bindView(this)
-            it.showPostInfo()
-            it.getUserInfo()
-            it.getComments()
+            it.showPostInfo(post)
+            it.getUserInfo(post.userId)
+            it.getComments(post.id)
         }
     }
 
     override fun onPause() {
         super.onPause()
 
-        presenter?.unbindView()
+        presenter.unbindView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        presenter?.destroy()
+        presenter.onDestroy()
     }
 
     companion object {

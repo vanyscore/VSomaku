@@ -1,10 +1,9 @@
 package com.example.vsomaku.presenters
 
-import io.reactivex.disposables.CompositeDisposable
+import com.example.vsomaku.presenters.views.BaseView
 
-abstract class BasePresenter<V> {
+abstract class BasePresenter<V : BaseView>  {
     protected var view : V? = null
-    protected val disposable = CompositeDisposable()
 
     fun bindView(view : V) {
         this.view = view
@@ -14,8 +13,5 @@ abstract class BasePresenter<V> {
         this.view = null
     }
 
-    fun destroy(){
-        disposable.dispose()
-        disposable.clear()
-    }
+    abstract fun onDestroy()
 }
