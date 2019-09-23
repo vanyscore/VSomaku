@@ -21,5 +21,5 @@ interface SomakuApi {
     fun getAlbums(@Query("userId") userId : Int) : Single<Response<List<Album>>>
 
     @GET("photos")
-    fun getPhotos(@Query("albumId") albumId : Int) : Flowable<Response<List<Photo>>>
+    fun getPhotos(@Query("albumId") albumId : Int) : Single<Response<List<Photo>>>
 }

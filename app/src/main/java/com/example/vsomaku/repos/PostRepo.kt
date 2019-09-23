@@ -1,43 +1,36 @@
 package com.example.vsomaku.repos
 
-import com.example.vsomaku.ApiHelper
-import com.example.vsomaku.SomakuApi
+import android.util.Log
+import com.example.vsomaku.DEBUG_TAG
+import com.example.vsomaku.daos.PostDao
 import com.example.vsomaku.data.Post
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
-class PostRepo(private val api: SomakuApi) : BaseRepo() {
+class PostRepo(private val postDao : PostDao) : BaseRepo() {
 
-    fun getPosts( consumer: Consumer<List<Post>>, errorConsumer: Consumer<Throwable>){
-        disposable.add(ApiHelper.apiInstance.getPosts()
-            .map { response ->
-                response.body()
+    fun getPosts(consumer: Consumer<List<Post>>, errorConsumer: Consumer<Throwable>) {
+        disposable.add(api.getPosts()
+            .map {response ->
+                if (response.body() != null) response.body()!!
+                else throw java.lang.Exception("posts null")
             }
             .toObservable()
-            .flatMapIterable {
-                it
+            .doOnNext { posts : List<Post> ->
+                postDao.insertAll(posts)
             }
-            .map {
-                Post(
-                    it.userId,
-                    it.id,
-                    it.title?.let { title ->
-                        title[0].toUpperCase() + title.substring(1)
-                    },
-                    it.description?.let { description ->
-                        description[0].toUpperCase() + description.substring(1).replace(
-                            "\n",
-                            ""
-                        )
-                    }
-                )
+            .firstOrError()
+            .onErrorResumeNext {
+                Log.d(DEBUG_TAG,"Load posts from db in $this")
+                postDao.getAll()
             }
-            .toList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(consumer, errorConsumer))
+            .subscribe({
+                consumer.accept(it)
+            }, {
+                errorConsumer.accept(it)
+            }))
     }
 }

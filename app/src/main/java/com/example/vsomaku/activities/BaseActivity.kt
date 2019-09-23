@@ -1,5 +1,7 @@
 package com.example.vsomaku.activities
 
+import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.vsomaku.presenters.BasePresenter
 import com.example.vsomaku.presenters.views.BaseView

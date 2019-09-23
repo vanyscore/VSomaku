@@ -2,14 +2,8 @@ package com.example.vsomaku.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import android.widget.TextView
-import com.example.vsomaku.ApiHelper
-import com.example.vsomaku.AppComponentHelper
-import com.example.vsomaku.DEBUG_TAG
+import com.example.vsomaku.Components
 import com.example.vsomaku.R
 import com.example.vsomaku.data.Album
 import com.example.vsomaku.data.Photo
@@ -17,9 +11,6 @@ import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.UserInfoPresenter
 import com.example.vsomaku.presenters.views.UserView
 import kotlinx.android.synthetic.main.activity_user.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 class UserActivity : AppCompatActivity(), UserView {
@@ -32,17 +23,13 @@ class UserActivity : AppCompatActivity(), UserView {
         setContentView(R.layout.activity_user)
 
         user = intent.getParcelableExtra(USER_KEY)
-        AppComponentHelper.appComponent.injectUserInfoPresenter(this)
+        Components.APP_COMPONENT?.injectUserInfoPresenter(this)
     }
 
      override fun showUserInfo(user : User) {
         tv_name.text = user.name
         tv_user_name.text = user.userName
         tv_email.text = user.email
-
-        tv_address.text = "${user.address.city}, ${user.address.street}, ${user.address.apartment}"
-        tv_company_name.text = user.company.name
-        tv_company_phrase.text = user.company.phrase
     }
 
     override fun bindAlbumsInfo(albums: List<Album>, photos : List<Photo>) {

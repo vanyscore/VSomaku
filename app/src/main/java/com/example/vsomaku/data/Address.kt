@@ -2,8 +2,10 @@ package com.example.vsomaku.data
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 
+@Entity
 data class Address(@SerializedName("street") val street : String,
                    @SerializedName("suite") val apartment : String,
                    @SerializedName("city") val city : String) : Parcelable {

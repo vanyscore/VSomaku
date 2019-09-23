@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vsomaku.*
 import com.example.vsomaku.adapters.PostsAdapter
+import com.example.vsomaku.components.DaggerAppComponent
 import com.example.vsomaku.data.Post
+import com.example.vsomaku.modules.AppContextModule
 import com.example.vsomaku.presenters.PostsPresenter
 import com.example.vsomaku.presenters.views.PostsView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,7 +23,13 @@ class MainActivity : AppCompatActivity(), PostsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        AppComponentHelper.appComponent.injectPostsPresenter(this)
+        if (Components.APP_COMPONENT == null) {
+            Components.APP_COMPONENT = DaggerAppComponent.builder().appContextModule(
+                AppContextModule(this)
+            ).build()
+        }
+
+        Components.APP_COMPONENT?.injectPostsPresenter(this)
     }
 
     override fun bindPosts(posts : List<Post>) {

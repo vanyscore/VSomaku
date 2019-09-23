@@ -2,13 +2,16 @@ package com.example.vsomaku.data
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity
 data class Comment(@SerializedName("postId") val postId : Int,
-                   @SerializedName("id") val id : Int,
-                   @SerializedName("name") val name : String,
+                   @PrimaryKey @SerializedName("id") val id : Int,
+                   @SerializedName("name") var name : String,
                    @SerializedName("email") val email : String,
-                   @SerializedName("body") val text : String) : Parcelable {
+                   @SerializedName("body") var text : String) : Parcelable {
     override fun describeContents(): Int {
         return 0
     }

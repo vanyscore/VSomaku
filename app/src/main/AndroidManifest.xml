@@ -19,8 +19,7 @@
             android:name=".activities.PostActivity"
             android:label="Post info" />
         <activity
-            android:name=".activities.MainActivity"
-            android:label="Posts">
+            android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
