@@ -34,6 +34,7 @@ class UserInfoRepo(private val albumDao : AlbumDao,
                 .firstOrError()
                 .onErrorResumeNext {
                     Log.d(DEBUG_TAG, "albums loaded from db in $this")
+                    errorConsumer.accept(it)
                     albumDao.getAlbumsByUserId(userId)
                 }
                 .toObservable()

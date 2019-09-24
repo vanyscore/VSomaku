@@ -6,6 +6,7 @@ import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.views.UserView
 import com.example.vsomaku.repos.UserInfoRepo
 import io.reactivex.functions.Consumer
+import retrofit2.HttpException
 
 class UserInfoPresenter(private val repo : UserInfoRepo) : BasePresenter<UserView>() {
     fun showUserInfo(user : User) {

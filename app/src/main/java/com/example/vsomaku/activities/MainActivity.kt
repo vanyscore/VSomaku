@@ -3,8 +3,10 @@ package com.example.vsomaku.activities
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vsomaku.*
+import com.example.vsomaku.adapters.PagedListAdapter
 import com.example.vsomaku.adapters.PostsAdapter
 import com.example.vsomaku.components.DaggerAppComponent
 import com.example.vsomaku.data.Post
@@ -37,6 +39,14 @@ class MainActivity : AppCompatActivity(), PostsView {
         recycler_view.adapter = PostsAdapter(this, posts)
     }
 
+    override fun bindPagedList(pagedList: PagedList<Post>) {
+        val adapter = PagedListAdapter(this)
+        adapter.submitList(pagedList)
+
+        recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recycler_view.adapter = adapter
+    }
+
     override fun showLayout() {
         progress_bar.visibility = View.GONE
         recycler_view.visibility = View.VISIBLE
@@ -52,7 +62,7 @@ class MainActivity : AppCompatActivity(), PostsView {
         super.onResume()
 
         presenter.bindView(this)
-        presenter.loadPosts()
+        presenter.getPagedList()
     }
 
     override fun onDestroy() {
