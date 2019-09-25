@@ -22,6 +22,7 @@ class PostRepo(private val postDao : PostDao) : BaseRepo() {
             }
             .firstOrError()
             .onErrorResumeNext {
+                Log.d(DEBUG_TAG, it.localizedMessage)
                 Log.d(DEBUG_TAG,"Load posts from db in $this")
                 postDao.getAll()
             }
@@ -46,6 +47,7 @@ class PostRepo(private val postDao : PostDao) : BaseRepo() {
             }
             .firstOrError()
             .onErrorResumeNext {
+                Log.d(DEBUG_TAG, it.localizedMessage)
                 Log.d(DEBUG_TAG,"Load posts from db in $this")
                 postDao.getAll()
             }

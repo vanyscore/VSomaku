@@ -20,6 +20,6 @@ class NetworkUtilsModule {
     }
 
     companion object {
-        private const val BASE_URL = "http://www.somaku.com/"
+        private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
     }
 }

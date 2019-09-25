@@ -38,7 +38,11 @@ class PostsPresenter(private val postRepo: PostRepo) : BasePresenter<PostsView>(
     }
 
     fun getPagedList() {
-        val dataSource = PostsDataSource(postRepo)
+        val dataSource = PostsDataSource(postRepo, object : PostsDataSource.OnInitialDataLoaded {
+            override fun dataLoaded() {
+                view?.showLayout()
+            }
+        })
         val config = PagedList.Config.Builder()
             .setPageSize(10)
             .setEnablePlaceholders(false)
@@ -51,9 +55,8 @@ class PostsPresenter(private val postRepo: PostRepo) : BasePresenter<PostsView>(
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ pagedList ->
-                view?.let {
-                    it.bindPagedList(pagedList)
-                    it.showLayout()
+                view?.let {v ->
+                    v.bindPagedList(pagedList)
                 }
             }, {
                 Log.d(DEBUG_TAG, it.localizedMessage)

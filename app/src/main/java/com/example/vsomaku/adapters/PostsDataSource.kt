@@ -7,7 +7,7 @@ import com.example.vsomaku.data.Post
 import com.example.vsomaku.repos.PostRepo
 import io.reactivex.functions.Consumer
 
-class PostsDataSource(private val postRepo : PostRepo) : PositionalDataSource<Post>() {
+class PostsDataSource(private val postRepo : PostRepo, private val onInitialDataLoaded : OnInitialDataLoaded) : PositionalDataSource<Post>() {
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Post>) {
         postRepo.loadPosts(params.startPosition, params.startPosition + params.loadSize, Consumer { posts ->
             Log.d(DEBUG_TAG, "load posts from [${params.startPosition}] to [${params.startPosition + params.loadSize}]")
@@ -23,6 +23,7 @@ class PostsDataSource(private val postRepo : PostRepo) : PositionalDataSource<Po
             Consumer { posts ->
                 Log.d(DEBUG_TAG, "load posts from [${params.requestedStartPosition}] to [${params.requestedLoadSize}]")
                 changeData(posts)
+                onInitialDataLoaded.dataLoaded()
                 callback.onResult(posts, params.requestedStartPosition)
             }, Consumer {
                 Log.d(DEBUG_TAG, it.localizedMessage)
@@ -34,5 +35,9 @@ class PostsDataSource(private val postRepo : PostRepo) : PositionalDataSource<Po
             post.title = post.title?.let { it[0].toUpperCase() + it.substring(1) }
             post.description = post.description?.let { it[0].toUpperCase() + it.replace("\n", "").substring(1) }
         }
+    }
+
+    interface OnInitialDataLoaded {
+        fun dataLoaded()
     }
 }

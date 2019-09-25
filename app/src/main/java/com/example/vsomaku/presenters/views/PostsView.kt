@@ -1,7 +1,6 @@
 package com.example.vsomaku.presenters.views
 
 import androidx.paging.PagedList
-import com.example.vsomaku.adapters.PagedListAdapter
 import com.example.vsomaku.data.Post
 
 interface PostsView : BaseView {
