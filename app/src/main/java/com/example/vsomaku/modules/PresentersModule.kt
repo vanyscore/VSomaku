@@ -1,5 +1,6 @@
 package com.example.vsomaku.modules
 
+import android.content.Context
 import com.example.vsomaku.presenters.PostInfoPresenter
 import com.example.vsomaku.presenters.PostsPresenter
 import com.example.vsomaku.presenters.UserInfoPresenter
@@ -13,8 +14,8 @@ import dagger.Provides
 class PresentersModule {
 
     @Provides
-    fun providePostsPresenter(repo: PostRepo) : PostsPresenter {
-        return PostsPresenter(repo)
+    fun providePostsPresenter(repo: PostRepo, context : Context) : PostsPresenter {
+        return PostsPresenter(repo, context)
     }
 
     @Provides

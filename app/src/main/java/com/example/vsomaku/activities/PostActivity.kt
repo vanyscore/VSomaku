@@ -27,7 +27,7 @@ class PostActivity : AppCompatActivity(), PostInfoView {
         setContentView(R.layout.activity_post)
 
         post = intent.getParcelableExtra(POST_KEY)
-        Components.APP_COMPONENT?.injectPostInfoPresenter(this)
+        (this.application as App).component.injectPostInfoPresenter(this)
     }
 
     override fun bindComments(comments : List<Comment>) {

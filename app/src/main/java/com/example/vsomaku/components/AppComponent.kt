@@ -18,7 +18,7 @@ interface AppComponent {
     fun injectPostsPresenter(activity : MainActivity)
     fun injectPostInfoPresenter(activity : PostActivity)
     fun injectUserInfoPresenter(activity : UserActivity)
-    fun injectRepo(repo : BaseRepo)
+
     fun getContext() : Context
 
     @Singleton

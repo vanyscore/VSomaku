@@ -2,6 +2,7 @@ package com.example.vsomaku.repos
 
 import android.util.Log
 import com.example.vsomaku.DEBUG_TAG
+import com.example.vsomaku.SomakuApi
 import com.example.vsomaku.daos.CommentDao
 import com.example.vsomaku.daos.PostDao
 import com.example.vsomaku.daos.UserDao
@@ -13,7 +14,8 @@ import io.reactivex.schedulers.Schedulers
 import java.lang.Exception
 
 class PostInfoRepo(private val userDao : UserDao,
-                   private val commentDao : CommentDao) : BaseRepo() {
+                   private val commentDao : CommentDao,
+                   api : SomakuApi) : BaseRepo(api) {
     fun loadComments(consumer : Consumer<List<Comment>>, errorConsumer : Consumer<Throwable>, postId : Int) {
         disposable.add(api.getComments(postId)
             .map {response ->

@@ -3,7 +3,7 @@ package com.example.vsomaku.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import com.example.vsomaku.Components
+import com.example.vsomaku.App
 import com.example.vsomaku.R
 import com.example.vsomaku.data.Album
 import com.example.vsomaku.data.Photo
@@ -23,7 +23,7 @@ class UserActivity : AppCompatActivity(), UserView {
         setContentView(R.layout.activity_user)
 
         user = intent.getParcelableExtra(USER_KEY)
-        Components.APP_COMPONENT?.injectUserInfoPresenter(this)
+        (this.application as App).component.injectUserInfoPresenter(this)
     }
 
      override fun showUserInfo(user : User) {

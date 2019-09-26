@@ -1,16 +1,17 @@
 package com.example.vsomaku.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.vsomaku.*
+import com.example.vsomaku.App
+import com.example.vsomaku.DEBUG_TAG
+import com.example.vsomaku.R
 import com.example.vsomaku.adapters.PagedListAdapter
 import com.example.vsomaku.adapters.PostsAdapter
-import com.example.vsomaku.components.DaggerAppComponent
 import com.example.vsomaku.data.Post
-import com.example.vsomaku.modules.AppContextModule
 import com.example.vsomaku.presenters.PostsPresenter
 import com.example.vsomaku.presenters.views.PostsView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,13 +26,9 @@ class MainActivity : AppCompatActivity(), PostsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (Components.APP_COMPONENT == null) {
-            Components.APP_COMPONENT = DaggerAppComponent.builder().appContextModule(
-                AppContextModule(this)
-            ).build()
-        }
+        (this.application as App).component.injectPostsPresenter(this)
 
-        Components.APP_COMPONENT?.injectPostsPresenter(this)
+        Log.d(DEBUG_TAG, "${this.javaClass.name} started")
     }
 
     override fun bindPosts(posts : List<Post>) {
