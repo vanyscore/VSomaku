@@ -1,8 +1,10 @@
 package com.example.vsomaku.presenters
 
+import android.content.Context
+import android.os.Handler
 import android.util.Log
 import androidx.paging.PagedList
-import com.example.vsomaku.Components
+import com.example.vsomaku.App
 import com.example.vsomaku.DEBUG_TAG
 import com.example.vsomaku.MainThreadExecutor
 import com.example.vsomaku.adapters.PostsDataSource
@@ -10,14 +12,13 @@ import com.example.vsomaku.data.Post
 import com.example.vsomaku.presenters.views.PostsView
 import com.example.vsomaku.repos.PostRepo
 import io.reactivex.Single
-import io.reactivex.functions.Consumer
-import java.util.concurrent.Executors
-import android.os.Handler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.Executors
 
-class PostsPresenter(private val postRepo: PostRepo) : BasePresenter<PostsView>() {
+class PostsPresenter(private val postRepo: PostRepo, private val context : Context) : BasePresenter<PostsView>() {
 
     private val disposable = CompositeDisposable()
 
@@ -50,7 +51,7 @@ class PostsPresenter(private val postRepo: PostRepo) : BasePresenter<PostsView>(
 
         disposable.add(Single.just(PagedList.Builder(dataSource, config)
             .setFetchExecutor(Executors.newSingleThreadExecutor())
-            .setNotifyExecutor(MainThreadExecutor(Handler(Components.APP_COMPONENT?.getContext()?.mainLooper)))
+            .setNotifyExecutor(MainThreadExecutor(Handler(context.mainLooper)))
             .build())
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())

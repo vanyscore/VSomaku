@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vsomaku.R
 import com.example.vsomaku.data.Comment
-import kotlinx.android.synthetic.main.activity_user.view.tv_email
-import kotlinx.android.synthetic.main.activity_user.view.tv_name
 import kotlinx.android.synthetic.main.rcv_item_comment.view.*
 
 class CommentariesAdapter(private val context : Context, private val comments : List<Comment>)

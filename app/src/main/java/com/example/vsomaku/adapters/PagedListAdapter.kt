@@ -1,18 +1,20 @@
 package com.example.vsomaku.adapters
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vsomaku.R
-import com.example.vsomaku.activities.PostActivity
 import com.example.vsomaku.data.Post
+import com.example.vsomaku.fragments.PostInfoFragment
+import com.example.vsomaku.fragments.Router
 import kotlinx.android.synthetic.main.rcv_item_post.view.*
 
-class PagedListAdapter(private val context : Context) :
+class PagedListAdapter(private val context : Context, private val router : Router) :
     PagedListAdapter<Post, com.example.vsomaku.adapters.PagedListAdapter.PostViewHolder>(PostDiffItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -30,9 +32,7 @@ class PagedListAdapter(private val context : Context) :
             itemView.tv_description.text = post.description
 
             itemView.setOnClickListener {
-                val intent = Intent(context, PostActivity::class.java)
-                intent.putExtra(PostActivity.POST_KEY, post)
-                context.startActivity(intent)
+                router.startPostInfoFragment(post)
             }
         }
     }

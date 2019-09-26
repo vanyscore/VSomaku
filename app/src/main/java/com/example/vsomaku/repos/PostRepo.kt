@@ -2,13 +2,14 @@ package com.example.vsomaku.repos
 
 import android.util.Log
 import com.example.vsomaku.DEBUG_TAG
+import com.example.vsomaku.SomakuApi
 import com.example.vsomaku.daos.PostDao
 import com.example.vsomaku.data.Post
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 
-class PostRepo(private val postDao : PostDao) : BaseRepo() {
+class PostRepo(private val postDao : PostDao, api : SomakuApi) : BaseRepo(api) {
 
     fun loadPosts(consumer: Consumer<List<Post>>, errorConsumer: Consumer<Throwable>) {
         disposable.add(api.getPosts()

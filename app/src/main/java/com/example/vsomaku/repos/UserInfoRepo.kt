@@ -20,7 +20,8 @@ import retrofit2.Response
 import java.lang.Exception
 
 class UserInfoRepo(private val albumDao : AlbumDao,
-                   private val photoDao: PhotoDao) : BaseRepo() {
+                   private val photoDao: PhotoDao,
+                   api : SomakuApi) : BaseRepo(api) {
     fun loadAlbumsData(consumer : Consumer<Pair<List<Album>, List<Photo>>>, errorConsumer : Consumer<Throwable>, userId : Int) {
         disposable.add(api.getAlbums(userId)
                 .map {
