@@ -6,8 +6,8 @@ import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class Company(@SerializedName("name") val name : String,
-              @SerializedName("catchPhrase") val phrase : String) : Parcelable {
+data class Company(@SerializedName("name") val name : String?,
+              @SerializedName("catchPhrase") val phrase : String?) : Parcelable {
     override fun describeContents(): Int {
         return 0
     }

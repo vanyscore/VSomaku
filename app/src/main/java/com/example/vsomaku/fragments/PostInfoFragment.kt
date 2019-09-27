@@ -23,15 +23,23 @@ import com.example.vsomaku.presenters.views.PostInfoView
 import javax.inject.Inject
 
 import kotlinx.android.synthetic.main.fragment_post_info.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
-/**
- * A simple [Fragment] subclass.
- */
 class PostInfoFragment : BaseFragment(), PostInfoView {
     @Inject
+    @InjectPresenter
     lateinit var presenter : PostInfoPresenter
 
+    @ProvidePresenter
+    fun providePresenter() : PostInfoPresenter = presenter
+
     lateinit var post : Post
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        App.getComponent().injectPostInfoPresenter(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +51,7 @@ class PostInfoFragment : BaseFragment(), PostInfoView {
 
         val arguments = arguments
         if (arguments != null)
-            post = arguments.getParcelable(POST_KEY)
-
-        component.injectPostInfoPresenter(this)
+            post = arguments.getParcelable(POST_KEY)!!
 
         Log.d(DEBUG_TAG, "$this view created")
 
@@ -55,21 +61,8 @@ class PostInfoFragment : BaseFragment(), PostInfoView {
     override fun onResume() {
         super.onResume()
 
-        presenter.bindView(this)
         presenter.getComments(post.id)
         presenter.getUserInfo(post.userId)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        presenter.unbindView()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        presenter.onDestroy()
     }
 
     override fun bindComments(comments: List<Comment>) {

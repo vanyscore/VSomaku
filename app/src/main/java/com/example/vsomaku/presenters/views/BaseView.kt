@@ -1,5 +1,7 @@
 package com.example.vsomaku.presenters.views
 
-interface BaseView {
+import moxy.MvpView
+
+interface BaseView : MvpView {
     fun showLayout()
 }

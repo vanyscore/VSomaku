@@ -7,12 +7,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.vsomaku"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -29,6 +29,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.dagger:dagger:2.24'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "com.github.moxy-community:moxy-androidx:1.0.13"
+    implementation "com.github.moxy-community:moxy:1.0.13"
+    kapt "com.github.moxy-community:moxy-compiler:1.0.13"
     kapt 'com.google.dagger:dagger-compiler:2.13'
     kapt "androidx.room:room-compiler:2.1.0"
     implementation "android.arch.paging:runtime:2.1.0"

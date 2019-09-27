@@ -16,9 +16,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import java.util.concurrent.Executors
 
-class PostsPresenter(private val postRepo: PostRepo, private val context : Context) : BasePresenter<PostsView>() {
+@InjectViewState
+class PostsPresenter(private val postRepo: PostRepo, private val context : Context) : MvpPresenter<PostsView>() {
 
     private val disposable = CompositeDisposable()
 
@@ -29,10 +32,7 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
                 post.description = post.description?.let { it[0].toUpperCase() + it.replace("\n", "").substring(1) }
             }
 
-            view?.let {
-                it.bindPosts(posts)
-                it.showLayout()
-            }
+            viewState.bindPosts(posts)
         }, Consumer {
             Log.d(DEBUG_TAG, it.localizedMessage)
         })
@@ -41,7 +41,7 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
     fun getPagedList() {
         val dataSource = PostsDataSource(postRepo, object : PostsDataSource.OnInitialDataLoaded {
             override fun dataLoaded() {
-                view?.showLayout()
+                viewState.showLayout()
             }
         })
         val config = PagedList.Config.Builder()
@@ -56,15 +56,15 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ pagedList ->
-                view?.let {v ->
-                    v.bindPagedList(pagedList)
-                }
+                viewState.bindPagedList(pagedList)
             }, {
                 Log.d(DEBUG_TAG, it.localizedMessage)
             }))
     }
 
     override fun onDestroy() {
+        super.onDestroy()
+
         postRepo.destroy()
         disposable.dispose()
         disposable.clear()

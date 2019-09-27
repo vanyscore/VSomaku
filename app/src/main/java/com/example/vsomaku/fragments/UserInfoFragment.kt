@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.vsomaku.App
 import com.example.vsomaku.R
 import com.example.vsomaku.data.Album
 import com.example.vsomaku.data.Photo
@@ -14,17 +15,29 @@ import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.UserInfoPresenter
 import com.example.vsomaku.presenters.views.UserView
 import kotlinx.android.synthetic.main.fragment_user_info.*
+import moxy.MvpAppCompatFragment
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
  */
-class UserInfoFragment : BaseFragment(), UserView {
+class UserInfoFragment : MvpAppCompatFragment(), UserView {
 
     @Inject
+    @InjectPresenter
     lateinit var presenter : UserInfoPresenter
 
+    @ProvidePresenter
+    fun providePresenter() : UserInfoPresenter = presenter
+
     lateinit var user : User
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        App.getComponent().injectUserInfoPresenter(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +48,7 @@ class UserInfoFragment : BaseFragment(), UserView {
         actionBar?.setTitle(R.string.user_info_fragment_title)
 
         if (arguments != null)
-            user = arguments!!.getParcelable(USER_KEY)
-
-        component.injectUserInfoPresenter(this)
+            user = arguments!!.getParcelable(USER_KEY)!!
 
         return inflater.inflate(R.layout.fragment_user_info, container, false)
     }
@@ -45,21 +56,8 @@ class UserInfoFragment : BaseFragment(), UserView {
     override fun onResume() {
         super.onResume()
 
-        presenter.bindView(this)
         presenter.showUserInfo(user)
         presenter.getAlbumsData(user.id)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        presenter.unbindView()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        presenter.onDestroy()
     }
 
     override fun showUserInfo(user: User) {

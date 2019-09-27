@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName
 @Entity
 data class Comment(@SerializedName("postId") val postId : Int,
                    @PrimaryKey @SerializedName("id") val id : Int,
-                   @SerializedName("name") var name : String,
-                   @SerializedName("email") val email : String,
-                   @SerializedName("body") var text : String) : Parcelable {
+                   @SerializedName("name") var name : String?,
+                   @SerializedName("email") val email : String?,
+                   @SerializedName("body") var text : String?) : Parcelable {
     override fun describeContents(): Int {
         return 0
     }

@@ -15,22 +15,30 @@ import com.example.vsomaku.data.Post
 import com.example.vsomaku.presenters.PostsPresenter
 import com.example.vsomaku.presenters.views.PostsView
 import kotlinx.android.synthetic.main.fragment_posts.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 class PostsFragment : BaseFragment(), PostsView {
 
     @Inject
+    @InjectPresenter
     lateinit var presenter : PostsPresenter
+
+    @ProvidePresenter
+    fun providePresenter() : PostsPresenter = presenter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        App.getComponent().injectPostsPresenter(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.setTitle(R.string.posts_fragment_title)
-
-        component.injectPostsPresenter(this)
 
         return inflater.inflate(R.layout.fragment_posts, container, false)
     }
@@ -38,20 +46,7 @@ class PostsFragment : BaseFragment(), PostsView {
     override fun onResume() {
         super.onResume()
 
-        presenter.bindView(this)
         presenter.getPagedList()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        presenter.unbindView()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        presenter.onDestroy()
     }
 
     override fun bindPosts(posts: List<Post>) {
