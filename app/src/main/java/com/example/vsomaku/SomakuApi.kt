@@ -15,7 +15,7 @@ interface SomakuApi {
     fun getComments(@Query("postId") postId : Int) : Single<Response<List<Comment>>>
 
     @GET("users")
-    fun getUser(@Query("id") userId : Int) : Single<Response<List<User>>>
+    fun getUsers(@Query("id") userId : Int) : Single<Response<List<User>>>
 
     @GET("albums")
     fun getAlbums(@Query("userId") userId : Int) : Single<Response<List<Album>>>

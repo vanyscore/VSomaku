@@ -14,7 +14,7 @@ import dagger.Provides
 class PresentersModule {
 
     @Provides
-    fun providePostsPresenter(repo: PostRepo, context : Context) : PostsPresenter {
+    fun providePostsPresenter(repo : PostRepo, context : Context) : PostsPresenter {
         return PostsPresenter(repo, context)
     }
 

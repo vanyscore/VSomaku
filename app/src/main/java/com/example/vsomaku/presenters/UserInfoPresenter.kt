@@ -6,19 +6,21 @@ import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.views.UserView
 import com.example.vsomaku.repos.UserInfoRepo
 import io.reactivex.functions.Consumer
-import retrofit2.HttpException
+import moxy.InjectViewState
+import moxy.MvpPresenter
 
-class UserInfoPresenter(private val repo : UserInfoRepo) : BasePresenter<UserView>() {
+@InjectViewState
+class UserInfoPresenter(private val repo : UserInfoRepo) : MvpPresenter<UserView>() {
     fun showUserInfo(user : User) {
-        view?.showUserInfo(user)
+        viewState.showUserInfo(user)
     }
 
     fun getAlbumsData(userId : Int) {
         repo.loadAlbumsData(Consumer {pair ->
-            view?.let {
-                it.bindAlbumsInfo(pair.first, pair.second)
-                it.showLayout()
-            }
+            viewState.bindAlbumsInfo(pair.first, pair.second)
+            viewState.showLayout()
+
+            Log.d(DEBUG_TAG, "Albums loaded")
         }, Consumer {
             Log.d(DEBUG_TAG, it.localizedMessage)
         }, userId)
@@ -27,5 +29,4 @@ class UserInfoPresenter(private val repo : UserInfoRepo) : BasePresenter<UserVie
     override fun onDestroy() {
         repo.destroy()
     }
-
 }

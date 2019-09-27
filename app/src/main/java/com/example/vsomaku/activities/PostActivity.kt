@@ -14,20 +14,36 @@ import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.PostInfoPresenter
 import com.example.vsomaku.presenters.views.PostInfoView
 import kotlinx.android.synthetic.main.activity_post.*
+import moxy.MvpAppCompatActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
-class PostActivity : AppCompatActivity(), PostInfoView {
+class PostActivity : MvpAppCompatActivity(), PostInfoView {
 
     @Inject
+    @InjectPresenter
     lateinit var presenter : PostInfoPresenter
+
+    @ProvidePresenter
+    fun providePresenter() : PostInfoPresenter = presenter
+
     lateinit var post : Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        App.getComponent().injectPostInfoPresenter(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
         post = intent.getParcelableExtra(POST_KEY)
-        (this.application as App).component.injectPostInfoPresenter(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.getUserInfo(post.userId)
+        presenter.getComments(post.id)
+        presenter.showPostInfo(post)
     }
 
     override fun bindComments(comments : List<Comment>) {
@@ -53,23 +69,6 @@ class PostActivity : AppCompatActivity(), PostInfoView {
     override fun showLayout() {
         progress_bar.visibility = View.GONE
         scroll_view.visibility = View.VISIBLE
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        presenter.let {
-            it.bindView(this)
-            it.showPostInfo(post)
-            it.getUserInfo(post.userId)
-            it.getComments(post.id)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        presenter.unbindView()
     }
 
     override fun onDestroy() {

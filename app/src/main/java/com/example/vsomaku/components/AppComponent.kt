@@ -8,6 +8,7 @@ import com.example.vsomaku.activities.UserActivity
 import com.example.vsomaku.daos.*
 import com.example.vsomaku.databases.SomakuDatabase
 import com.example.vsomaku.modules.*
+import com.example.vsomaku.presenters.PostsPresenter
 import com.example.vsomaku.repos.BaseRepo
 import dagger.Component
 import javax.inject.Singleton
@@ -22,7 +23,7 @@ interface AppComponent {
     fun getContext() : Context
 
     @Singleton
-    fun getSomakuApi() : SomakuApi
+    fun getApi() : SomakuApi
 
     @Singleton
     fun getDatabase() : SomakuDatabase

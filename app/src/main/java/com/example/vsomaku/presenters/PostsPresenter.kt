@@ -3,7 +3,6 @@ package com.example.vsomaku.presenters
 import android.content.Context
 import android.util.Log
 import androidx.paging.PagedList
-import com.example.vsomaku.App
 import com.example.vsomaku.DEBUG_TAG
 import com.example.vsomaku.MainThreadExecutor
 import com.example.vsomaku.adapters.PostsDataSource
@@ -14,35 +13,35 @@ import io.reactivex.Single
 import io.reactivex.functions.Consumer
 import java.util.concurrent.Executors
 import android.os.Handler
-import android.os.Looper
+import com.example.vsomaku.App
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
+import moxy.MvpPresenter
+import javax.inject.Inject
 
-class PostsPresenter(private val postRepo: PostRepo, private val context : Context) : BasePresenter<PostsView>() {
+@InjectViewState
+class PostsPresenter(private val repo : PostRepo, private val context: Context) : MvpPresenter<PostsView>() {
 
     private val disposable = CompositeDisposable()
 
     fun getPosts() {
-        postRepo.loadPosts(Consumer { posts ->
+        repo.loadPosts(Consumer { posts ->
             for (post : Post in posts) {
                 post.title = post.title?.let { it[0].toUpperCase() + it.substring(1) }
                 post.description = post.description?.let { it[0].toUpperCase() + it.replace("\n", "").substring(1) }
             }
-
-            view?.let {
-                it.bindPosts(posts)
-                it.showLayout()
-            }
+            viewState.bindPosts(posts)
         }, Consumer {
             Log.d(DEBUG_TAG, it.localizedMessage)
         })
     }
 
     fun getPagedList() {
-        val dataSource = PostsDataSource(postRepo, object : PostsDataSource.OnInitialDataLoaded {
+        val dataSource = PostsDataSource(repo, object : PostsDataSource.OnInitialDataLoaded {
             override fun dataLoaded() {
-                view?.showLayout()
+                viewState.showLayout()
             }
         })
         val config = PagedList.Config.Builder()
@@ -57,17 +56,9 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ pagedList ->
-                view?.let {v ->
-                    v.bindPagedList(pagedList)
-                }
+                viewState.bindPagedList(pagedList)
             }, {
                 Log.d(DEBUG_TAG, it.localizedMessage)
             }))
-    }
-
-    override fun onDestroy() {
-        postRepo.destroy()
-        disposable.dispose()
-        disposable.clear()
     }
 }

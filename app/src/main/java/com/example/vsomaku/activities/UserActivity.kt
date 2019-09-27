@@ -11,19 +11,34 @@ import com.example.vsomaku.data.User
 import com.example.vsomaku.presenters.UserInfoPresenter
 import com.example.vsomaku.presenters.views.UserView
 import kotlinx.android.synthetic.main.activity_user.*
+import moxy.MvpAppCompatActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
-class UserActivity : AppCompatActivity(), UserView {
+class UserActivity : MvpAppCompatActivity(), UserView {
     @Inject
+    @InjectPresenter
     lateinit var presenter : UserInfoPresenter
+
+    @ProvidePresenter
+    fun providePresenter() : UserInfoPresenter = presenter
+
     private lateinit var user : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        App.getComponent().injectUserInfoPresenter(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
         user = intent.getParcelableExtra(USER_KEY)
-        (this.application as App).component.injectUserInfoPresenter(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.showUserInfo(user)
+        presenter.getAlbumsData(user.id)
     }
 
      override fun showUserInfo(user : User) {
@@ -40,22 +55,6 @@ class UserActivity : AppCompatActivity(), UserView {
     override fun showLayout() {
         progress_bar.visibility = View.GONE
         scroll_view.visibility = View.VISIBLE
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        presenter.let {
-            it.bindView(this)
-            it.showUserInfo(user)
-            it.getAlbumsData(user.id)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        presenter.unbindView()
     }
 
     override fun onDestroy() {

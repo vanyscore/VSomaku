@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
 
 @Entity
 data class User(@PrimaryKey @SerializedName("id") val id : Int,
-                @SerializedName("name") val name : String,
-                @SerializedName("username") val userName : String,
-                @SerializedName("email") val email : String) : Parcelable {
+                @SerializedName("name") val name : String?,
+                @SerializedName("username") val userName : String?,
+                @SerializedName("email") val email : String?) : Parcelable {
     override fun describeContents(): Int {
         return 0
     }

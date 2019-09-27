@@ -3,7 +3,6 @@ package com.example.vsomaku.activities
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vsomaku.App
@@ -14,21 +13,33 @@ import com.example.vsomaku.adapters.PostsAdapter
 import com.example.vsomaku.data.Post
 import com.example.vsomaku.presenters.PostsPresenter
 import com.example.vsomaku.presenters.views.PostsView
+import dagger.Lazy
 import kotlinx.android.synthetic.main.activity_main.*
+import moxy.MvpAppCompatActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), PostsView {
+class MainActivity : MvpAppCompatActivity(), PostsView {
 
     @Inject
+    @InjectPresenter
     lateinit var presenter : PostsPresenter
 
+    @ProvidePresenter
+    fun providePresenter() : PostsPresenter = presenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        App.getComponent().injectPostsPresenter(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
+    }
 
-        (this.application as App).component.injectPostsPresenter(this)
+    override fun onResume() {
+        super.onResume()
 
-        Log.d(DEBUG_TAG, "${this.javaClass.name} started")
+        presenter.getPagedList()
     }
 
     override fun bindPosts(posts : List<Post>) {
@@ -47,19 +58,6 @@ class MainActivity : AppCompatActivity(), PostsView {
     override fun showLayout() {
         progress_bar.visibility = View.GONE
         recycler_view.visibility = View.VISIBLE
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        presenter.unbindView()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        presenter.bindView(this)
-        presenter.getPagedList()
     }
 
     override fun onDestroy() {
