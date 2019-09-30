@@ -16,6 +16,11 @@ import java.util.*
 @InjectViewState
 class PostInfoPresenter(private val repo : PostInfoRepo) : MvpPresenter<PostInfoView>() {
     private var reqCount = 0
+    private lateinit var post : Post
+
+    fun attachPost(post : Post) {
+        this.post = post
+    }
 
     fun showPostInfo(post : Post) {
         viewState.bindPostInfo(post)
@@ -42,6 +47,16 @@ class PostInfoPresenter(private val repo : PostInfoRepo) : MvpPresenter<PostInfo
         }, Consumer {
             Log.d(DEBUG_TAG, it.localizedMessage)
         }, userId)
+    }
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+
+        getComments(post.id)
+        getUserInfo(post.userId)
+        showPostInfo(post)
+
+        Log.d(DEBUG_TAG, "PostInfoView first attached")
     }
 
     override fun onDestroy() {

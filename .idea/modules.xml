@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Android  projects-VSomaku.iml" filepath="$PROJECT_DIR$/Android  projects-VSomaku.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/Android  projects-VSomaku-app.iml" filepath="$PROJECT_DIR$/app/Android  projects-VSomaku-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/VSomaku.iml" filepath="$PROJECT_DIR$/VSomaku.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/VSomaku-app.iml" filepath="$PROJECT_DIR$/app/VSomaku-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Work-Android  projects-VSomaku.iml" filepath="$PROJECT_DIR$/Work-Android  projects-VSomaku.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

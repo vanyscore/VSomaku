@@ -34,10 +34,17 @@ class PostInfoFragment : BaseFragment(), PostInfoView {
     @ProvidePresenter
     fun providePresenter() : PostInfoPresenter = presenter
 
-    lateinit var post : Post
-
     override fun onCreate(savedInstanceState: Bundle?) {
         App.getComponent().injectPostInfoPresenter(this)
+
+        val arguments = arguments
+        if (arguments != null) {
+            val post : Post = arguments.getParcelable(POST_KEY)!!
+            presenter.attachPost(post)
+        }
+
+        Log.d(DEBUG_TAG, "$this created")
+
         super.onCreate(savedInstanceState)
     }
 
@@ -45,24 +52,22 @@ class PostInfoFragment : BaseFragment(), PostInfoView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar?.setTitle(R.string.post_info_fragment_title)
-
-        val arguments = arguments
-        if (arguments != null)
-            post = arguments.getParcelable(POST_KEY)!!
-
         Log.d(DEBUG_TAG, "$this view created")
 
         return inflater.inflate(R.layout.fragment_post_info, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        presenter.getComments(post.id)
-        presenter.getUserInfo(post.userId)
+        val actionBar = (activity as AppCompatActivity).supportActionBar
+        actionBar?.setTitle(R.string.post_info_fragment_title)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Log.d(DEBUG_TAG, "$this destroyed")
     }
 
     override fun bindComments(comments: List<Comment>) {

@@ -23,10 +23,13 @@ class MainActivity : AppCompatActivity(), Router {
             startPostsFragment()
 
         setSupportActionBar(toolbar)
+
+        Log.d(DEBUG_TAG, "Main activity created")
     }
 
     override fun startPostsFragment() {
         val fragment = PostsFragment()
+        fragment.retainInstance = true
 
         supportFragmentManager
             .beginTransaction()
@@ -38,6 +41,8 @@ class MainActivity : AppCompatActivity(), Router {
     override fun startPostInfoFragment(post : Post) {
         val fragment = PostInfoFragment()
         val bundle = Bundle()
+
+        fragment.retainInstance = true
 
         bundle.putParcelable(PostInfoFragment.POST_KEY, post)
         fragment.arguments = bundle
@@ -52,6 +57,8 @@ class MainActivity : AppCompatActivity(), Router {
     override fun startUserInfoFragment(user : User) {
         val fragment = UserInfoFragment()
         val bundle = Bundle()
+
+        fragment.retainInstance = true
 
         bundle.putParcelable(UserInfoFragment.USER_KEY, user)
         fragment.arguments = bundle

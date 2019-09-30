@@ -18,4 +18,8 @@ open class BaseFragment : MvpAppCompatFragment() {
         else
             throw Exception("${context::class.java.simpleName} must implement Router")
     }
+
+    override fun toString(): String {
+        return this.javaClass.name
+    }
 }

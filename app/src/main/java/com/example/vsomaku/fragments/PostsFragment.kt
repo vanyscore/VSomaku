@@ -2,6 +2,7 @@ package com.example.vsomaku.fragments
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vsomaku.App
+import com.example.vsomaku.DEBUG_TAG
 import com.example.vsomaku.R
 import com.example.vsomaku.adapters.PagedListAdapter
 import com.example.vsomaku.data.Post
@@ -30,7 +32,16 @@ class PostsFragment : BaseFragment(), PostsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         App.getComponent().injectPostsPresenter(this)
+
+        Log.d(DEBUG_TAG, "PostsFragment created")
+
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Log.d(DEBUG_TAG, "PostsFragment destroyed")
     }
 
     override fun onCreateView(
@@ -41,12 +52,6 @@ class PostsFragment : BaseFragment(), PostsView {
         actionBar?.setTitle(R.string.posts_fragment_title)
 
         return inflater.inflate(R.layout.fragment_posts, container, false)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        presenter.getPagedList()
     }
 
     override fun bindPosts(posts: List<Post>) {

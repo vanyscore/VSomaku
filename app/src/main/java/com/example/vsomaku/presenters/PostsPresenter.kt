@@ -25,6 +25,15 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
 
     private val disposable = CompositeDisposable()
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+
+        getPosts()
+        getPagedList()
+
+        Log.d(DEBUG_TAG, "PostsView first attach")
+    }
+
     fun getPosts() {
         postRepo.loadPosts(Consumer { posts ->
             for (post : Post in posts) {
