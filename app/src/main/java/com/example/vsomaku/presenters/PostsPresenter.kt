@@ -28,7 +28,6 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        getPosts()
         getPagedList()
 
         Log.d(DEBUG_TAG, "PostsView first attach")

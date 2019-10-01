@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.RouterTransaction
 import com.example.vsomaku.R
+import com.example.vsomaku.controllers.PostInfoController
 import com.example.vsomaku.data.Post
-import com.example.vsomaku.fragments.PostInfoFragment
-import com.example.vsomaku.fragments.Router
 import kotlinx.android.synthetic.main.rcv_item_post.view.*
 
-class PagedListAdapter(private val context : Context, private val router : Router) :
+class PagedListAdapter(private val context : Context, private val router : Router, private var clickListener: ((Post)-> Unit)?) :
     PagedListAdapter<Post, com.example.vsomaku.adapters.PagedListAdapter.PostViewHolder>(PostDiffItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -32,7 +32,13 @@ class PagedListAdapter(private val context : Context, private val router : Route
             itemView.tv_description.text = post.description
 
             itemView.setOnClickListener {
-                router.startPostInfoFragment(post)
+                val bundle = Bundle()
+                bundle.putParcelable(PostInfoController.POST_KEY, post)
+
+                val controller = PostInfoController(bundle)
+
+                controller.args.putParcelable(PostInfoController.POST_KEY, post)
+                router.pushController(RouterTransaction.with(controller))
             }
         }
     }

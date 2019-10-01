@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.rcv_item_post.view.*
 
 class PostsAdapter(private val context : Context,
                    private val posts : List<Post>,
-                   private val fragmentManager: FragmentManager) : RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
+                   private val fragmentManager: FragmentManager?) : RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(LayoutInflater.from(context).inflate(R.layout.rcv_item_post, parent, false))
     }
