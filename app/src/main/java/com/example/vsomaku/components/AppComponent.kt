@@ -8,6 +8,7 @@ import com.example.vsomaku.controllers.UserInfoController
 import com.example.vsomaku.daos.*
 import com.example.vsomaku.databases.SomakuDatabase
 import com.example.vsomaku.modules.*
+import com.example.vsomaku.repos.PostRepo
 import dagger.Component
 import javax.inject.Singleton
 
@@ -18,9 +19,9 @@ interface AppComponent {
     fun injectPostInfoPresenter(controller : PostInfoController)
     fun injectUserInfoPresenter(controller : UserInfoController)
 
-
-
     fun getContext() : Context
+
+    fun getPostsRepo() : PostRepo
 
     @Singleton
     fun getApi() : SomakuApi

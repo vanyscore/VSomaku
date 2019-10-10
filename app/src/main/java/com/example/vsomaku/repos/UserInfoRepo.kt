@@ -5,19 +5,15 @@ import com.example.vsomaku.DEBUG_TAG
 import com.example.vsomaku.SomakuApi
 import com.example.vsomaku.daos.AlbumDao
 import com.example.vsomaku.daos.PhotoDao
-import com.example.vsomaku.daos.UserDao
 import com.example.vsomaku.data.Album
 import com.example.vsomaku.data.Photo
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.SingleSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
-import java.lang.Exception
 
 class UserInfoRepo(private val albumDao : AlbumDao,
                    private val photoDao: PhotoDao,
