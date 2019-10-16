@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.util.Log
 import androidx.paging.PagedList
-import com.example.vsomaku.App
 import com.example.vsomaku.DEBUG_TAG
 import com.example.vsomaku.MainThreadExecutor
 import com.example.vsomaku.adapters.PostsDataSource
@@ -29,8 +28,6 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
         super.onFirstViewAttach()
 
         getPagedList()
-
-        Log.d(DEBUG_TAG, "PostsView first attach")
     }
 
     fun getPosts() {
@@ -60,7 +57,8 @@ class PostsPresenter(private val postRepo: PostRepo, private val context : Conte
         disposable.add(Single.just(PagedList.Builder(dataSource, config)
             .setFetchExecutor(Executors.newSingleThreadExecutor())
             .setNotifyExecutor(MainThreadExecutor(Handler(context.mainLooper)))
-            .build())
+            .build()
+            )
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ pagedList ->
